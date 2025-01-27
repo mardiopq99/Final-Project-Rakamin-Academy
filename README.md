@@ -1,116 +1,125 @@
-Amazon Returns Risk Prediction
+# Project : E-Commerce Sales Analysis
 
-Project Overview
+# Introduction
 
-This repository contains the work done as part of the Final Project Bootcamp Rakamin. The objective of the project is to assist Amazon, a global e-commerce leader, in effectively managing the product return process. By leveraging machine learning, we aim to predict the risk of product returns, enabling Amazon to take proactive measures and enhance operational efficiency.
+This project aims to explore and analyze sales data from an e-commerce company using Exploratory Data Analysis (EDA). The main objectives of EDA are:
+- Extract initial insights and identify patterns or trends.
+- Understand variable relationships to guide further analysis or modeling.
+EDA provides a foundation for business recommendations based on observed insights.
 
-Dataset
+# Dataset Overview
 
-The project uses the Amazon Sales Dataset, which includes data related to transactions, shipping, and other logistical information. The dataset was explored and preprocessed to derive meaningful insights and build a predictive model.
+The dataset contains 128,975 rows and key columns, including:
+- Order ID: Unique ID for each order.
+- Date: Order date.
+- Fulfillment: Indicates whether orders were fulfilled by Amazon or other merchants.
+- Sales Channel: Platform used for transactions.
+- Category: Product category (e.g., Kurta, Saree).
+- Size: Product size.
+- Qty: Quantity ordered.
+- Order Price: Total order price.
+- Ship Service Level: Shipping speed (e.g., expedited, standard).
+- Status: Order status (e.g., shipped, returned, canceled).
 
-Project Objectives
+# Summary of Insights from EDA
 
-Build a predictive model to detect products at high risk of being returned.
+1. Unique Order ID: The dataset includes 120,378 unique Order IDs, indicating multiple items per order.
+2. Peak Order Frequency: A significant spike in order frequency occurred in early May 2022.
+3. Distribution of Quantity and Price:
+   - Most quantities are centered around 1.
+   - Order prices approximate a normal distribution.
+4. Fulfillment by Amazon: Orders fulfilled by Amazon dominate, showing reliance on Amazon's logistics.
+5. Amazon.in Dominance: Amazon.in is the primary sales platform, indicating its effectiveness.
+6. B2C Transactions: Most transactions are Business-to-Consumer (B2C), focusing on retail sales.
+7. Popular Product Categories: "Set" and "Kurta" are the most ordered categories, with nearly 10,000 entries.
+8. Preferred Shipping Level: Expedited shipping is more popular than standard.
+9. Most Ordered Sizes: Sizes M, L, and XL dominate orders.
+10. Weak Correlation Between Quantity and Price: Quantity and Order Price have a low correlation (0.07).
+11. Successful Deliveries by Size: Most items in sizes M, L, XL, XXL, S, and XS are delivered successfully.
+12. High Average Price Categories: "Set," "Saree," and "Western Dress" have the highest average order prices.
+13. Top Regions: Maharashtra and Karnataka have the highest order volumes.
 
-Enable Amazon to implement preventative measures based on prediction results.
+# Data Preprocessing for Amazon Sales Dataset
 
-Improve customer experience and logistical efficiency by reducing return rates.
+## Dataset Description
+The dataset covers sales transactions on Amazon, including columns such as Date, Status, Category, Qty, and Amount. Preprocessing was conducted to clean, transform, and enhance data quality.
 
-Methodology
+## Preprocessing Steps
 
-1. Data Exploration and Preprocessing
+### 1. Handling Missing Values
+- Dropped columns with high missing values:
+  - Courier Status, currency, Amount, ship-city, ship-state, ship-postal-code, ship-country, promotion-ids, fulfilled-by, Unnamed: 22.
 
-Analyzed dataset to understand patterns and distributions.
+### 2. Data Type Adjustments
+- Converted Date to datetime.
+- Converted B2B to numeric.
 
-Cleaned data to handle missing values, outliers, and inconsistencies.
+### 3. Duplicate Removal
+- Removed duplicate rows for uniqueness.
 
-Performed exploratory data analysis (EDA) to uncover key insights.
+### 4. Outlier Handling
+- Applied log transformations to highly skewed columns:
+  - Qty → Qty_log
+  - Amount → Amount_log
 
-2. Model Development
+### 5. Feature Encoding
+- Ordinal Encoding:
+  - Mapped Size values (e.g., XS, S, M, L) to numeric levels.
+- One-Hot Encoding:
+  - Encoded Category and Region columns.
+- Geographical Mapping:
+  - Mapped ship-state into geographic regions (e.g., North, South).
 
-Utilized XGBoost as the primary machine learning model for its robustness in handling complex datasets.
+### 6. Class Imbalance Handling
+- Mapped Status into numeric labels:
+  - Shipped - Delivered to Buyer → 3
+  - Shipped - Returned to Seller → 2
+  - Shipped - Rejected by Buyer → 1
+- Balanced class distribution using SMOTE.
 
-Achieved an initial recall of 83%.
+### 7. Feature Engineering
+- Added date-related features:
+  - Day (numeric day in the month).
+  - Day_Type ("Weekday" or "Weekend").
+- Added binary indicator:
+  - Is_Weekend (1 for weekends, 0 for weekdays).
 
-Improved recall to 95% after hyperparameter tuning, ensuring high accuracy in detecting return risks.
+### 8. Feature Selection
+- Dropped irrelevant or redundant columns:
+  - index, ship-postal-code, Sales Channel, Status.
 
-3. Feature Importance
+# Additional Project Information
 
-The following features were found to be the most influential in predicting return risks:
+## Execution Process
+The project followed these main stages:
+1. **Data Collection and Exploration**: Data was sourced from the e-commerce company's logistics system and explored for patterns and distributions.
+2. **Data Preprocessing**:
+   - Missing Values: Filled missing data based on patterns or averages.
+   - Encoding: Applied techniques like One-Hot Encoding and Label Encoding.
+   - Normalization: Ensured consistent scaling of numeric features.
+3. **Feature Engineering**: Created new features, such as weekday/weekend indicators, to assess delivery effectiveness.
+4. **Modeling**:
+   - Algorithms: Logistic Regression, kNN, Random Forest, and XGBoost.
+5. **Team Collaboration and Tools**:
+   - Tools: Google Colab, Jupyter Notebook.
+   - Libraries: Pandas, Scikit-learn.
 
-Shipping Regions: West and South regions had higher risks.
+## Challenges Faced
+- **Team Communication**: Busy schedules among team members were managed with scheduled meetings and group chats.
+- **Numerical Data Limitations**: Addressed through feature engineering to add new information.
 
-Product Categories: Items like ethnic clothing and lower-body apparel showed higher return tendencies.
+## Key Outcomes
+- **Model Performance**: XGBoost achieved a recall of 85%.
+- **Feature Importance**:
+   - Regions (South and West) significantly influenced shipment status predictions.
+   - Product categories and delivery timing (weekends) were also impactful.
+- **Business Impact**:
+   - Proactive handling of returns reduced lost sales by 15%.
+   - Predictions enabled early notifications to sellers.
 
-Weekend Deliveries: Packages delivered on weekends were more likely to be returned.
+## Recommendations
+1. **Regional Focus**: Optimize logistics in high-return regions (South, West).
+2. **Product Categories**: Improve descriptions, size guides, and visuals for high-return categories.
+3. **Delivery Scheduling**: Avoid weekend deliveries to reduce return risks.
+4. **Customer Education**: Conduct campaigns to enhance understanding of shipping and return processes.
 
-4. Business Process Integration
-
-The machine learning implementation in e-commerce follows these steps:
-
-A customer places an order, and the system processes payment and records the transaction.
-
-The seller receives a notification to ship the product, and the system notifies the customer.
-
-The machine learning model predicts the shipping status and return risk based on various factors.
-
-If the return risk is high, the system notifies the seller and contacts the customer to take proactive steps, such as providing clarifications, changing the shipping method, or offering discounts.
-
-Preventive measures like additional discounts, insurance, or optimized shipping methods are applied to minimize the return risk before proceeding with delivery.
-
-Results
-
-The predictive system reduced potential return rates by 15%.
-
-The model’s insights supported strategic decision-making in logistics and customer service.
-
-Key Takeaways
-
-Machine learning can effectively address real-world business problems in e-commerce.
-
-The project highlights the importance of collaboration, detailed data analysis, and leveraging technology to drive impactful solutions.
-
-Repository Structure
-
-├── data                # Dataset files
-├── notebooks           # Jupyter notebooks for EDA and modeling
-├── scripts             # Python scripts for data preprocessing and model training
-├── models              # Saved model files
-├── reports             # Generated reports and visualizations
-├── README.md           # Project documentation
-
-Installation
-
-To replicate this project:
-
-Clone the repository:
-
-git clone https://github.com/yourusername/amazon-returns-prediction.git
-
-Install the required Python packages:
-
-pip install -r requirements.txt
-
-Usage
-
-Explore the dataset using the Jupyter notebooks in the notebooks folder.
-
-Run the scripts in the scripts folder to preprocess data and train the model.
-
-Evaluate the model’s performance using the provided evaluation metrics.
-
-Future Work
-
-Extend the model to include more granular features such as customer demographics.
-
-Explore the impact of promotional campaigns on return rates.
-
-Deploy the predictive model using Flask or Streamlit for real-time predictions.
-
-Contributors
-
-Your Name
-
-License
-
-This project is licensed under the MIT License. See LICENSE for details.# Final-Project-Rakamin-Academy
